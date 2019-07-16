@@ -69,7 +69,18 @@ view -> settings
 
 NOTES:
 
-	Running the gol is quite slow.  I use an O(n^2) alogrithm to run the sim, where is is the size of the 		board.  There are better ways to do this; however, the way I render imaging is by far the limiting 		factor.  My top priority was the smooth animation of the gol.  To achieve this, states of the gol are 	pre-rendered and saved as images.  Without the use of modules such as PIL or numpy, creating these 	images is slow.  As a result, it wasn't worth the effort to write a more efficient gol algroithm.
+	Running the gol is quite slow.  I use an O(n^2) alogrithm to run the sim, where is is the size of the 		board.  There are better ways to do this; however, the way I render imaging is by far the limiting 		factor.  My top priority was the smooth animation of the gol.  To achieve this, states of the gol are 		pre-rendered and saved as images.  Without the use of modules such as PIL or numpy, creating these 		images is slow.  As a result, it wasn't worth the effort to write a more efficient gol algroithm.
+
+	Specifically, the algorithm makes a "neighbors_map" which is the number of living cells around a given 	cell.  To do this, the program initializes the n_map as a 2d list of 0s with the same dimensions 		as the board.  It then loops through the cells on the board and, if it is alive, adds 1 to all of the 		adjacent locations in the n_map.  It then loops through the board again, this time looking up in a 		table 	whether the cell is alive or dead in the next step.  The table is generated from born numbers 		and survive numbers ie the number(s) of neighbors which results in a dead cell becoming alive and the 		number(s) of neighbors which results in an alive cell staying alive.  For true gol, birth number is 3 		and the survive numbers are 2 and three (annotated B3/A23).  From this a table can be made giving the 		result of every alive/number-of-neighbors combination.  For gol it looks like this:
+				
+						number of neighbors
+				0	1	2	3	4	5	6	7	8
+				_	_	_	_	_	_	_	_	_
+	is_alive	0   |	0	0	0	1	0	0	0	0	0
+			1   |	0	0	1	1	0	0	0	0	0
+
+	Doing this allows for easy generalization to many gol-like games, even non-binary ones where there are 	more possible states than just alive and dead.
 
 	True gol is played on an infinite board.  That ends up being more trouble than I wanted to put into
 	this, so I only implemented boundary conditions where the edges wrap or are dead.
+
